@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node build/index.js",
-    "start:dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
-    "test": "NODE_ENV=test ts-mocha --exit --recursive --reporter=${MOCHA_REPORTER:-dot} -p ./tsconfig.json tests/**/*.ts",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+    "start": "npm run build && node build/index.js",
+    "start:dev": "npx nodemon",
+    "test": "NODE_ENV=test ts-mocha --exit --recursive --reporter=${MOCHA_REPORTER:-dot} -p ./tsconfig.json tests/**/*.ts",
+    "test:watch": "npm run test -- --watch --watch-files tests/**/*.ts,src/**/*.ts"
   },
   "keywords": [],
   "author": "",
