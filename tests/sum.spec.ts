@@ -31,7 +31,7 @@ describe('sum', () => {
     context('unsafe integers / over Number.MAX_SAFE_INTEGER', () => {
       it('should return the sum of the two operands', () => {
         // Number.MAX_SAFE_INTEGER -> 9007199254740991
-        const result = sum('32087199264843995', '96057297254240990')
+        const result = sum('0032087199264843995', '96057297254240990')
         assert.equal(result, '128144496519084985')
       })
     })
