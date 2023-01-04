@@ -2,8 +2,8 @@ import { performance } from 'perf_hooks'
 import { baseAdd, algorithmMapper } from '../../src/addition'
 
 const EXECUTION_COUNT = 1000000
-const ARG_A = '00951891410132068978704156'
-const ARG_B = '010894804120189789041260489'
+const ARG_A = '008453982363396855835371259518914198740132068978704156'
+const ARG_B = '01089525498544141443548925735425804120189789041260489'
 
 const bench = (): any => {
   console.log('START')
