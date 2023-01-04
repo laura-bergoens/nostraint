@@ -2,12 +2,16 @@ import { stripLeadingZeros, charParseInt } from './utils'
 
 const REGEX_POSITIVE_INTEGER = /^[0-9]*$/
 
-export const sum = (a: string, b: string): string => {
+export const baseAdd = (a: string, b: string, algo: string): string => {
   if (a.match(REGEX_POSITIVE_INTEGER)?.[0] !== a) return ''
   if (b.match(REGEX_POSITIVE_INTEGER)?.[0] !== b) return ''
   const intA = parseInt(a)
   const intB = parseInt(b)
   if (Number.isSafeInteger(intA) && Number.isSafeInteger(intB)) return (intA + intB).toString()
+  return algorithmMapper[algo](a, b)
+}
+
+const _digitByDigitWithCarry = (a: string, b: string): string => {
   const strippedA = stripLeadingZeros(a)
   const strippedB = stripLeadingZeros(b)
   const largest = strippedA.length > strippedB.length ? strippedA : strippedB
@@ -21,4 +25,8 @@ export const sum = (a: string, b: string): string => {
   }
   result = `${carry.toString()}${result}`
   return stripLeadingZeros(result)
+}
+
+const algorithmMapper: Record<string, Function> = {
+  digitByDigitWithCarry: _digitByDigitWithCarry
 }
