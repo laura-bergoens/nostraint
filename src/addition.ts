@@ -12,20 +12,6 @@ export const baseAdd = (a: string, b: string, algo: Function): string => {
   return algo(stripLeadingZeros(a), stripLeadingZeros(b))
 }
 
-const _digitByDigitWithCarry = (a: string, b: string): string => {
-  const largest = a.length > b.length ? a : b
-  const smallest = a.length > b.length ? b : a
-  let carry = 0
-  let result = ''
-  for (let i = largest.length - 1; i >= 0; --i) {
-    const currentSum = safeParseInt(smallest[i]) + safeParseInt(largest[i]) + carry
-    carry = Math.floor(currentSum / 10)
-    result = `${(currentSum % 10).toString()}${result}`
-  }
-  result = `${carry.toString()}${result}`
-  return stripLeadingZeros(result)
-}
-
 const _partialSums = (a: string, b: string): string => {
   const packetsA = safeRegexMatch(a, REGEX_FOR_SPLITTING)
   const packetsB = safeRegexMatch(b, REGEX_FOR_SPLITTING)
@@ -47,6 +33,5 @@ const _partialSums = (a: string, b: string): string => {
 }
 
 export const algorithmMapper: Record<string, Function> = {
-  digitByDigitWithCarry: _digitByDigitWithCarry,
   partialSums: _partialSums
 }
