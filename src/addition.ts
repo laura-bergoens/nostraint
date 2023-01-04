@@ -2,13 +2,13 @@ import { stripLeadingZeros, charParseInt } from './utils'
 
 const REGEX_POSITIVE_INTEGER = /^[0-9]*$/
 
-export const baseAdd = (a: string, b: string, algo: string): string => {
+export const baseAdd = (a: string, b: string, algo: Function): string => {
   if (a.match(REGEX_POSITIVE_INTEGER)?.[0] !== a) return ''
   if (b.match(REGEX_POSITIVE_INTEGER)?.[0] !== b) return ''
   const intA = parseInt(a)
   const intB = parseInt(b)
   if (Number.isSafeInteger(intA) && Number.isSafeInteger(intB)) return (intA + intB).toString()
-  return algorithmMapper[algo](a, b)
+  return algo(a, b)
 }
 
 const _digitByDigitWithCarry = (a: string, b: string): string => {
@@ -27,6 +27,6 @@ const _digitByDigitWithCarry = (a: string, b: string): string => {
   return stripLeadingZeros(result)
 }
 
-const algorithmMapper: Record<string, Function> = {
+export const algorithmMapper: Record<string, Function> = {
   digitByDigitWithCarry: _digitByDigitWithCarry
 }
