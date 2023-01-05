@@ -65,19 +65,18 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
   const finalSign = isBiggerThan(neg, pos) ? '-' : '+'
   const packetsNeg = safeRegexMatch(neg, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
   const packetsPos = safeRegexMatch(pos, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
-  const packetsNegWithSign = packetsNeg.map((packet: string): string => `-${packet}`)
-  const largest = packetsNegWithSign.length > packetsPos.length ? packetsNegWithSign : packetsPos
-  const smallest = packetsNegWithSign.length > packetsPos.length ? packetsPos : packetsNegWithSign
   let result = ''
   let carry = 0
-  while (largest.length > 0) {
-    const largestPack = largest.pop()
-    const smallestPack = smallest.pop()
-    const maxDigitBeforeCarry = smallestPack !== undefined ? Math.max(smallestPack.replace('-', '').length, largestPack.replace('-', '').length) : largestPack.length
+  while (packetsNeg.length > 0 || packetsPos.length > 0) {
+    let negative = packetsNeg.pop()
+    let positive = packetsPos.pop()
+    negative = negative === undefined ? '0' : negative
+    positive = positive === undefined ? '0' : positive
+    const maxDigitBeforeCarry = Math.max(negative.length, positive.length)
     const inter = Array(maxDigitBeforeCarry).fill('0')
     inter.unshift('1')
     const offset = parseInt(inter.join(''))
-    let currentSum = safeParseInt(largestPack) + safeParseInt(smallestPack) + carry
+    let currentSum = parseInt(positive) - parseInt(negative) + carry
     if ((finalSign === '-' && currentSum <= 0) || (finalSign === '+' && currentSum >= 0)) carry = 0
     else {
       if (finalSign === '-') {
