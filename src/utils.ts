@@ -30,3 +30,8 @@ export const isBiggerThan = (a: string, b: string): boolean => {
   if (a.length < b.length) return false
   return parseInt(a[0]) > parseInt(b[0])
 }
+export const changeSign = (a: string): string => {
+  return a.charAt(0) === '-'
+    ? a.replace('-', '')
+    : (a.charAt(0) === '+' ? a.replace('+', '-') : `-${a}`)
+}
