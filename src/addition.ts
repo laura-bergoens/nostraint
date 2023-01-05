@@ -3,7 +3,8 @@ import {
   cleanIntegerStr,
   isIntegerStr,
   splitSignAndNumber,
-  isBiggerThan
+  isBiggerThan,
+  changeSign
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
 const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
@@ -18,8 +19,22 @@ export const baseAdd = (a: string, b: string, algo: Function): string => {
   return algo(cleanA, cleanB)
 }
 
+export const baseSubtract = (a: string, b: string, algo: Function): string => {
+  if (!isIntegerStr(a) || !isIntegerStr(b)) return ''
+  const cleanA = cleanIntegerStr(a)
+  const cleanB = cleanIntegerStr(b)
+  const intA = parseInt(cleanA)
+  const intB = parseInt(cleanB)
+  if (_isSubtractionSafe(intA, intB)) return (intA - intB).toString()
+  return algo(cleanA, changeSign(cleanB))
+}
+
 const _isAdditionSafe = (a: number, b: number): boolean => {
   return Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a + b)
+}
+
+const _isSubtractionSafe = (a: number, b: number): boolean => {
+  return Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a - b)
 }
 
 const _partialSums = (a: string, b: string): string => {
