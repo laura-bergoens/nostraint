@@ -12,9 +12,6 @@ const stripLeadingZeros = (a: string): string => {
 const stripSpaces = (a: string): string => {
   return a.replace(/\s/g, '')
 }
-export const safeParseInt = (a: string | undefined): number => {
-  return a !== undefined ? parseInt(a) : 0
-}
 export const safeRegexMatch = (a: string, b: RegExp): any[] => {
   const matches = a.match(b)
   return Array.isArray(matches) ? matches : ['']

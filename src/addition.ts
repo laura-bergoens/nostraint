@@ -1,5 +1,4 @@
 import {
-  safeParseInt,
   safeRegexMatch,
   cleanIntegerStr,
   isIntegerStr,
@@ -24,7 +23,6 @@ const _isAdditionSafe = (a: number, b: number): boolean => {
 }
 
 const _partialSums = (a: string, b: string): string => {
-  // ignore signs for now
   const { number: numberA, sign: signA } = splitSignAndNumber(a)
   const { number: numberB, sign: signB } = splitSignAndNumber(b)
   if (signA === '+' && signB === '+') return _partialSumsAllPositive(numberA, numberB)
@@ -36,15 +34,15 @@ const _partialSums = (a: string, b: string): string => {
 const _partialSumsAllPositive = (a: string, b: string): string => {
   const packetsA = safeRegexMatch(a, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
   const packetsB = safeRegexMatch(b, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
-  const largest = packetsA.length > packetsB.length ? packetsA : packetsB
-  const smallest = packetsA.length > packetsB.length ? packetsB : packetsA
   let result = ''
   let carry = 0
-  while (largest.length > 0) {
-    const largestPack = largest.pop()
-    const smallestPack = smallest.pop()
-    const maxDigitBeforeCarry = smallestPack !== undefined ? Math.max(smallestPack.length, largestPack.length) : largestPack.length
-    const currentSum = safeParseInt(largestPack) + safeParseInt(smallestPack) + carry
+  while (packetsA.length > 0 || packetsB.length > 0) {
+    let numberA = packetsA.pop()
+    let numberB = packetsB.pop()
+    numberA = numberA === undefined ? '0' : numberA
+    numberB = numberB === undefined ? '0' : numberB
+    const maxDigitBeforeCarry = Math.max(numberA.length, numberB.length)
+    const currentSum = parseInt(numberA) + parseInt(numberB) + carry
     let currentSumAsStr = currentSum.toString()
     if (currentSumAsStr.length > maxDigitBeforeCarry) {
       carry = parseInt(currentSumAsStr.charAt(0))
