@@ -2,7 +2,9 @@ import {
   safeParseInt,
   safeRegexMatch,
   cleanIntegerStr,
-  isIntegerStr
+  isIntegerStr,
+  splitSignAndNumber,
+  isBiggerThan
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
 const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
@@ -23,10 +25,17 @@ const _isAdditionSafe = (a: number, b: number): boolean => {
 
 const _partialSums = (a: string, b: string): string => {
   // ignore signs for now
-  const unsignedA = ['+', '-'].includes(a.charAt(0)) ? a.substring(1) : a
-  const unsignedB = ['+', '-'].includes(b.charAt(0)) ? b.substring(1) : b
-  const packetsA = safeRegexMatch(unsignedA, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
-  const packetsB = safeRegexMatch(unsignedB, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const { number: numberA, sign: signA } = splitSignAndNumber(a)
+  const { number: numberB, sign: signB } = splitSignAndNumber(b)
+  if (signA === '+' && signB === '+') return _partialSumsAllPositive(numberA, numberB)
+  if (signA === '-' && signB === '-') return _partialSumsAllNegative(numberA, numberB)
+  if (signA === '-') return _partialSumsMixed(numberA, numberB)
+  return _partialSumsMixed(numberB, numberA)
+}
+
+const _partialSumsAllPositive = (a: string, b: string): string => {
+  const packetsA = safeRegexMatch(a, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const packetsB = safeRegexMatch(b, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
   const largest = packetsA.length > packetsB.length ? packetsA : packetsB
   const smallest = packetsA.length > packetsB.length ? packetsB : packetsA
   let result = ''
@@ -45,6 +54,45 @@ const _partialSums = (a: string, b: string): string => {
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
   return result
+}
+
+const _partialSumsAllNegative = (a: string, b: string): string => {
+  return `-${_partialSumsAllPositive(a, b)}`
+}
+
+const _partialSumsMixed = (neg: string, pos: string): string => {
+  if (neg === pos) return '0'
+  const finalSign = isBiggerThan(neg, pos) ? '-' : '+'
+  const packetsNeg = safeRegexMatch(neg, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const packetsPos = safeRegexMatch(pos, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const packetsNegWithSign = packetsNeg.map((packet: string): string => `-${packet}`)
+  const largest = packetsNegWithSign.length > packetsPos.length ? packetsNegWithSign : packetsPos
+  const smallest = packetsNegWithSign.length > packetsPos.length ? packetsPos : packetsNegWithSign
+  let result = ''
+  let carry = 0
+  while (largest.length > 0) {
+    const largestPack = largest.pop()
+    const smallestPack = smallest.pop()
+    const maxDigitBeforeCarry = smallestPack !== undefined ? Math.max(smallestPack.replace('-', '').length, largestPack.replace('-', '').length) : largestPack.length
+    const inter = Array(maxDigitBeforeCarry).fill('0')
+    inter.unshift('1')
+    const offset = parseInt(inter.join(''))
+    let currentSum = safeParseInt(largestPack) + safeParseInt(smallestPack) + carry
+    if ((finalSign === '-' && currentSum <= 0) || (finalSign === '+' && currentSum >= 0)) carry = 0
+    else {
+      if (finalSign === '-') {
+        currentSum = currentSum - offset
+        carry = 1
+      } else {
+        currentSum = currentSum + offset
+        carry = -1
+      }
+    }
+    const currentSumAsStrNoSign = currentSum < 0 ? currentSum.toString().substring(1) : currentSum.toString()
+    result = `${currentSumAsStrNoSign}${result}`
+  }
+  if (carry !== 0) result = `${carry.toString()}${result}`
+  return `${finalSign === '-' ? '-' : ''}${result}`
 }
 
 export const algorithmMapper: Record<string, Function> = {
