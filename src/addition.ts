@@ -1,28 +1,43 @@
-import { stripLeadingZeros, safeParseInt, safeRegexMatch, REGEX_POSITIVE_INTEGER } from './utils'
+import {
+  safeParseInt,
+  safeRegexMatch,
+  cleanIntegerStr,
+  isIntegerStr
+} from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
-const MAX_CHARACTERS_COUNT_PER_PACKET = 15
-const REGEX_FOR_SPLITTING = /.{1,15}/g
+const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
 
 export const baseAdd = (a: string, b: string, algo: Function): string => {
-  if (a.match(REGEX_POSITIVE_INTEGER)?.[0] !== a) return ''
-  if (b.match(REGEX_POSITIVE_INTEGER)?.[0] !== b) return ''
-  const intA = parseInt(a)
-  const intB = parseInt(b)
-  if (Number.isSafeInteger(intA) && Number.isSafeInteger(intB)) return (intA + intB).toString()
-  return algo(stripLeadingZeros(a), stripLeadingZeros(b))
+  if (!isIntegerStr(a) || !isIntegerStr(b)) return ''
+  const cleanA = cleanIntegerStr(a)
+  const cleanB = cleanIntegerStr(b)
+  const intA = parseInt(cleanA)
+  const intB = parseInt(cleanB)
+  if (_isAdditionSafe(intA, intB)) return (intA + intB).toString()
+  return algo(cleanA, cleanB)
+}
+
+const _isAdditionSafe = (a: number, b: number): boolean => {
+  return Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a + b)
 }
 
 const _partialSums = (a: string, b: string): string => {
-  const packetsA = safeRegexMatch(a, REGEX_FOR_SPLITTING)
-  const packetsB = safeRegexMatch(b, REGEX_FOR_SPLITTING)
+  // ignore signs for now
+  const unsignedA = ['+', '-'].includes(a.charAt(0)) ? a.substring(1) : a
+  const unsignedB = ['+', '-'].includes(b.charAt(0)) ? b.substring(1) : b
+  const packetsA = safeRegexMatch(unsignedA, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const packetsB = safeRegexMatch(unsignedB, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
   const largest = packetsA.length > packetsB.length ? packetsA : packetsB
   const smallest = packetsA.length > packetsB.length ? packetsB : packetsA
   let result = ''
   let carry = 0
-  for (let i = largest.length - 1; i >= 0; --i) {
-    const currentSum = safeParseInt(smallest[i]) + safeParseInt(largest[i]) + carry
+  while (largest.length > 0) {
+    const largestPack = largest.pop()
+    const smallestPack = smallest.pop()
+    const maxDigitBeforeCarry = smallestPack !== undefined ? Math.max(smallestPack.length, largestPack.length) : largestPack.length
+    const currentSum = safeParseInt(largestPack) + safeParseInt(smallestPack) + carry
     let currentSumAsStr = currentSum.toString()
-    if (currentSumAsStr.length > MAX_CHARACTERS_COUNT_PER_PACKET) {
+    if (currentSumAsStr.length > maxDigitBeforeCarry) {
       carry = parseInt(currentSumAsStr.charAt(0))
       currentSumAsStr = currentSumAsStr.substring(1)
     } else carry = 0
