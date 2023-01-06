@@ -9,22 +9,14 @@ const stripLeadingZeros = (a: string): string => {
   return `${sign}${number}`
 }
 
-const stripSpaces = (a: string): string => {
-  return a.replace(/\s/g, '')
-}
+const stripSpaces = (a: string): string => a.replace(/\s/g, '')
 export const safeRegexMatch = (a: string, b: RegExp): any[] => {
   const matches = a.match(b)
   return Array.isArray(matches) ? matches : ['']
 }
-export const isIntegerStr = (a: string): boolean => {
-  return a.match(REGEX_INTEGER)?.[0] === a
-}
-export const cleanIntegerStr = (a: string): string => {
-  return stripLeadingZeros(stripSpaces(a))
-}
-export const splitSignAndNumber = (a: string): { number: string, sign: string } => {
-  return ['+', '-'].includes(a.charAt(0)) ? { number: a.substring(1), sign: a.charAt(0) } : { number: a, sign: '+' }
-}
+export const isIntegerStr = (a: string): boolean => a.match(REGEX_INTEGER)?.[0] === a
+export const cleanIntegerStr = (a: string): string => stripLeadingZeros(stripSpaces(a))
+export const splitSignAndNumber = (a: string): { number: string, sign: string } => ['+', '-'].includes(a.charAt(0)) ? { number: a.substring(1), sign: a.charAt(0) } : { number: a, sign: '+' }
 export const isBiggerThan = (a: string, b: string): boolean => {
   if (a.length > b.length) return true
   if (a.length < b.length) return false
@@ -33,8 +25,6 @@ export const isBiggerThan = (a: string, b: string): boolean => {
   while (a[i] === b[i]) ++i
   return parseInt(a[i]) > parseInt(b[i])
 }
-export const changeSign = (a: string): string => {
-  return a.charAt(0) === '-'
-    ? a.replace('-', '')
-    : (a.charAt(0) === '+' ? a.replace('+', '-') : `-${a}`)
-}
+export const changeSign = (a: string): string => a.charAt(0) === '-'
+  ? a.replace('-', '')
+  : (a.charAt(0) === '+' ? a.replace('+', '-') : `-${a}`)

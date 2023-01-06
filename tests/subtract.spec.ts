@@ -1,5 +1,5 @@
+import { subtract } from '../src'
 import { assert } from './test-helper'
-import { add, subtract } from '../src'
 
 describe('subtract', () => {
   context('invalid operands', () => {

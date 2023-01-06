@@ -4,7 +4,7 @@ import {
   isIntegerStr,
   splitSignAndNumber,
   isBiggerThan,
-  changeSign
+  changeSign,
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
 const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
@@ -51,13 +51,9 @@ export const baseSubtract_forRandomTestsOnly = (a: string, b: string, algo: Func
   return algo(cleanA, changeSign(cleanB))
 }
 
-const _isAdditionSafe = (a: number, b: number): boolean => {
-  return Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a + b)
-}
+const _isAdditionSafe = (a: number, b: number): boolean => Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a + b)
 
-const _isSubtractionSafe = (a: number, b: number): boolean => {
-  return Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a - b)
-}
+const _isSubtractionSafe = (a: number, b: number): boolean => Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a - b)
 
 const _partialSums = (a: string, b: string): string => {
   const { number: numberA, sign: signA } = splitSignAndNumber(a)
@@ -91,9 +87,7 @@ const _partialSumsAllPositive = (a: string, b: string): string => {
   return result
 }
 
-const _partialSumsAllNegative = (a: string, b: string): string => {
-  return `-${_partialSumsAllPositive(a, b)}`
-}
+const _partialSumsAllNegative = (a: string, b: string): string => `-${_partialSumsAllPositive(a, b)}`
 
 const _partialSumsMixed = (neg: string, pos: string): string => {
   if (neg === pos) return '0'
@@ -131,5 +125,5 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
 }
 
 export const algorithmMapper: Record<string, Function> = {
-  partialSums: _partialSums
+  partialSums: _partialSums,
 }
