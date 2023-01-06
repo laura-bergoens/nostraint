@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { assert } from './test-helper'
 import { add } from '../src'
 
 describe('add', () => {
@@ -103,6 +103,12 @@ describe('add', () => {
         it('should return the sum of the two operands', () => {
           const result = add('-9007199254741000', '9')
           assert.equal(result, '-9007199254740991')
+        })
+      })
+      context.skip('debug', () => {
+        it('should be true', () => {
+          const result = add('136995', '-162834')
+          assert.equal(result, '-25839')
         })
       })
     })

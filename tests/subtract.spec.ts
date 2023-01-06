@@ -1,5 +1,5 @@
-import { assert } from 'chai'
-import { subtract } from '../src'
+import { assert } from './test-helper'
+import { add, subtract } from '../src'
 
 describe('subtract', () => {
   context('invalid operands', () => {
@@ -103,6 +103,12 @@ describe('subtract', () => {
         it('should return the subtract of the two operands', () => {
           const result = subtract('-9007199254741000', '9')
           assert.equal(result, '-9007199254741009')
+        })
+      })
+      context.skip('debug', () => {
+        it('should be true', () => {
+          const result = subtract('170698', '180959')
+          assert.equal(result, '-10261')
         })
       })
     })

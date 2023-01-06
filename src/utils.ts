@@ -28,7 +28,10 @@ export const splitSignAndNumber = (a: string): { number: string, sign: string } 
 export const isBiggerThan = (a: string, b: string): boolean => {
   if (a.length > b.length) return true
   if (a.length < b.length) return false
-  return parseInt(a[0]) > parseInt(b[0])
+  if (a === b) return false
+  let i = 0
+  while (a[i] === b[i]) ++i
+  return parseInt(a[i]) > parseInt(b[i])
 }
 export const changeSign = (a: string): string => {
   return a.charAt(0) === '-'

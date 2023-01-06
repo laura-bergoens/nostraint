@@ -10,22 +10,44 @@ import {
 const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
 
 export const baseAdd = (a: string, b: string, algo: Function): string => {
-  if (!isIntegerStr(a) || !isIntegerStr(b)) return ''
+  if (!isIntegerStr(a) || !isIntegerStr(b)) {
+    return ''
+  }
   const cleanA = cleanIntegerStr(a)
   const cleanB = cleanIntegerStr(b)
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
-  if (_isAdditionSafe(intA, intB)) return (intA + intB).toString()
+  if (_isAdditionSafe(intA, intB)) {
+    return (intA + intB).toString()
+  }
+  return algo(cleanA, cleanB)
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const baseAdd_forRandomTestsOnly = (a: string, b: string, algo: Function): string => {
+  const cleanA = cleanIntegerStr(a)
+  const cleanB = cleanIntegerStr(b)
   return algo(cleanA, cleanB)
 }
 
 export const baseSubtract = (a: string, b: string, algo: Function): string => {
-  if (!isIntegerStr(a) || !isIntegerStr(b)) return ''
+  if (!isIntegerStr(a) || !isIntegerStr(b)) {
+    return ''
+  }
   const cleanA = cleanIntegerStr(a)
   const cleanB = cleanIntegerStr(b)
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
-  if (_isSubtractionSafe(intA, intB)) return (intA - intB).toString()
+  if (_isSubtractionSafe(intA, intB)) {
+    return (intA - intB).toString()
+  }
+  return algo(cleanA, changeSign(cleanB))
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const baseSubtract_forRandomTestsOnly = (a: string, b: string, algo: Function): string => {
+  const cleanA = cleanIntegerStr(a)
+  const cleanB = cleanIntegerStr(b)
   return algo(cleanA, changeSign(cleanB))
 }
 
@@ -90,8 +112,9 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
     inter.unshift('1')
     const offset = parseInt(inter.join(''))
     let currentSum = parseInt(positive) - parseInt(negative) + carry
-    if ((finalSign === '-' && currentSum <= 0) || (finalSign === '+' && currentSum >= 0)) carry = 0
-    else {
+    if ((finalSign === '-' && currentSum <= 0) || (finalSign === '+' && currentSum >= 0)) {
+      carry = 0
+    } else {
       if (finalSign === '-') {
         currentSum = currentSum - offset
         carry = 1
