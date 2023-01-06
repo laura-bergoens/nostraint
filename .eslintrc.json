@@ -11,6 +11,8 @@
         "sourceType": "module",
         "project": ["./tsconfig.json"]
     },
+    "ignorePatterns": ["build/"],
     "rules": {
+        "arrow-body-style": ["error", "as-needed"]
     }
 }
