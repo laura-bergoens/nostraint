@@ -4,7 +4,7 @@ import {
   isIntegerStr,
   splitSignAndNumber,
   isBiggerThan,
-  changeSign
+  changeSign,
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
 const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
@@ -125,5 +125,5 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
 }
 
 export const algorithmMapper: Record<string, Function> = {
-  partialSums: _partialSums
+  partialSums: _partialSums,
 }

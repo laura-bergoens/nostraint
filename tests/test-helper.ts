@@ -6,7 +6,7 @@ const randomIntAsStringAndNumber = (): { numberVer: number, stringVer: string } 
   const finalInteger = shouldBeNegative ? -randomInteger : randomInteger
   return {
     numberVer: finalInteger,
-    stringVer: finalInteger.toString()
+    stringVer: finalInteger.toString(),
   }
 }
 
