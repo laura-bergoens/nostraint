@@ -1,13 +1,13 @@
 import {
-  safeRegexMatch,
   cleanIntegerStr,
   isIntegerStr,
   splitSignAndNumber,
   isBiggerThan,
   changeSign,
+  stripLeadingZeroesOnCleanUnsigned,
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
-const PARTIAL_SUMS_REGEX_FOR_SPLITTING = /.{1,15}/g
+const PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET = 15
 
 export const baseAdd = (a: string, b: string, algo: Function): string => {
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
@@ -65,26 +65,25 @@ const _partialSums = (a: string, b: string): string => {
 }
 
 const _partialSumsAllPositive = (a: string, b: string): string => {
-  const packetsA = safeRegexMatch(a, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
-  const packetsB = safeRegexMatch(b, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const packetsA = _toPackets(a)
+  const packetsB = _toPackets(b)
   let result = ''
   let carry = 0
-  while (packetsA.length > 0 || packetsB.length > 0) {
-    let numberA = packetsA.pop()
-    let numberB = packetsB.pop()
+  while (packetsA.length > 0) {
+    let numberA = packetsA.shift()
+    let numberB = packetsB.shift()
     numberA = numberA === undefined ? '0' : numberA
     numberB = numberB === undefined ? '0' : numberB
-    const maxDigitBeforeCarry = Math.max(numberA.length, numberB.length)
     const currentSum = parseInt(numberA) + parseInt(numberB) + carry
     let currentSumAsStr = currentSum.toString()
-    if (currentSumAsStr.length > maxDigitBeforeCarry) {
+    if (currentSumAsStr.length > PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET) {
       carry = parseInt(currentSumAsStr.charAt(0))
       currentSumAsStr = currentSumAsStr.substring(1)
     } else carry = 0
-    result = `${currentSumAsStr}${result}`
+    result = `${currentSumAsStr.padStart(PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, '0')}${result}`
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
-  return result
+  return stripLeadingZeroesOnCleanUnsigned(result)
 }
 
 const _partialSumsAllNegative = (a: string, b: string): string => `-${_partialSumsAllPositive(a, b)}`
@@ -92,19 +91,16 @@ const _partialSumsAllNegative = (a: string, b: string): string => `-${_partialSu
 const _partialSumsMixed = (neg: string, pos: string): string => {
   if (neg === pos) return '0'
   const finalSign = isBiggerThan(neg, pos) ? '-' : '+'
-  const packetsNeg = safeRegexMatch(neg, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
-  const packetsPos = safeRegexMatch(pos, PARTIAL_SUMS_REGEX_FOR_SPLITTING)
+  const packetsNeg = _toPackets(neg)
+  const packetsPos = _toPackets(pos)
   let result = ''
   let carry = 0
   while (packetsNeg.length > 0 || packetsPos.length > 0) {
-    let negative = packetsNeg.pop()
-    let positive = packetsPos.pop()
+    let negative = packetsNeg.shift()
+    let positive = packetsPos.shift()
     negative = negative === undefined ? '0' : negative
     positive = positive === undefined ? '0' : positive
-    const maxDigitBeforeCarry = Math.max(negative.length, positive.length)
-    const inter = Array(maxDigitBeforeCarry).fill('0')
-    inter.unshift('1')
-    const offset = parseInt(inter.join(''))
+    const offset = parseInt('1'.padStart(PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, '0'))
     let currentSum = parseInt(positive) - parseInt(negative) + carry
     if ((finalSign === '-' && currentSum <= 0) || (finalSign === '+' && currentSum >= 0)) {
       carry = 0
@@ -118,10 +114,24 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
       }
     }
     const currentSumAsStrNoSign = currentSum < 0 ? currentSum.toString().substring(1) : currentSum.toString()
-    result = `${currentSumAsStrNoSign}${result}`
+    result = `${currentSumAsStrNoSign.padStart(PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, '0')}${result}`
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
-  return `${finalSign === '-' ? '-' : ''}${result}`
+  return `${finalSign === '-' ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(result)}`
+}
+
+const _toPackets = (a: string): string[] => {
+  const packets = []
+  let start = Math.max(a.length - PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, 0)
+  let end = a.length
+  let substr = a.substring(start, end)
+  while (substr.length > 0) {
+    packets.push(substr)
+    end = start
+    start = Math.max(start - PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, 0)
+    substr = a.slice(start, end)
+  }
+  return packets
 }
 
 export const algorithmMapper: Record<string, Function> = {

@@ -1,6 +1,6 @@
 const REGEX_INTEGER = /^\s*[+-]?\s*([0-9]*\s*)*$/
 
-const stripLeadingZeros = (a: string): string => {
+const stripLeadingZeroes = (a: string): string => {
   const clone = a
   let { sign, number } = ['+', '-'].includes(clone.charAt(0))
     ? { sign: clone.charAt(0), number: clone.substring(1) }
@@ -8,14 +8,15 @@ const stripLeadingZeros = (a: string): string => {
   while (number?.[0] === '0') number = number.substring(1)
   return `${sign}${number}`
 }
-
 const stripSpaces = (a: string): string => a.replace(/\s/g, '')
-export const safeRegexMatch = (a: string, b: RegExp): any[] => {
-  const matches = a.match(b)
-  return Array.isArray(matches) ? matches : ['']
+
+export const stripLeadingZeroesOnCleanUnsigned = (a: string): string => {
+  let clone = a
+  while (clone?.[0] === '0') clone = clone.substring(1)
+  return clone
 }
 export const isIntegerStr = (a: string): boolean => a.match(REGEX_INTEGER)?.[0] === a
-export const cleanIntegerStr = (a: string): string => stripLeadingZeros(stripSpaces(a))
+export const cleanIntegerStr = (a: string): string => stripLeadingZeroes(stripSpaces(a))
 export const splitSignAndNumber = (a: string): { number: string, sign: string } => ['+', '-'].includes(a.charAt(0)) ? { number: a.substring(1), sign: a.charAt(0) } : { number: a, sign: '+' }
 export const isBiggerThan = (a: string, b: string): boolean => {
   if (a.length > b.length) return true
