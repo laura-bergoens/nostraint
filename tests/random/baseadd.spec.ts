@@ -1,5 +1,5 @@
-import { assert, randomIntAsStringAndNumber } from '../test-helper'
 import { baseAdd_forRandomTestsOnly, algorithmMapper } from '../../src/addition'
+import { assert, randomIntAsStringAndNumber } from '../test-helper'
 
 const LOOP_COUNT = 100
 
