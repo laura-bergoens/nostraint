@@ -54,11 +54,11 @@ describe('multiply', () => {
       context('positive integers', () => {
         it('should return the product of the two operands', () => {
           const result = multiply('+003208719954145 87128325489171 3285264843995', '00009605718741261894786121 942972542409815990')
-          assert.equal(result, 'todo', 'n°1')
+          assert.equal(result, '3080019167006241003984491119192090231716341162676176439843360159644754860', 'n°1')
         })
         it('should return the product of the two operands', () => {
           const result = multiply('9007199254740991', '2')
-          assert.equal(result, 'todo', 'n°2')
+          assert.equal(result, '18014398509481982', 'n°2')
         })
       })
       context.skip('debug', () => {
