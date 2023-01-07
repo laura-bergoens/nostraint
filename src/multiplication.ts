@@ -16,6 +16,13 @@ export const baseMultiply = (a: string, b: string, algo: Function): string => {
   return algo(cleanA, cleanB)
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const baseMultiply_forRandomTestsOnly = (a: string, b: string, algo: Function): string => {
+  const cleanA = cleanIntegerStr(a)
+  const cleanB = cleanIntegerStr(b)
+  return algo(cleanA, cleanB)
+}
+
 const _isMultiplicationSafe = (a: number, b: number): boolean => Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a * b)
 
 const _partialProducts = (a: string, b: string): string => {
@@ -44,7 +51,7 @@ const _partialProducts = (a: string, b: string): string => {
           inter = inter + parseInt(carryStr)
           const interStr = inter.toString().padStart(PARTIAL_PRODUCTS_DIGIT_COUNT_PER_PACKET, '0')
           substr = interStr.substring(interStr.length - PARTIAL_PRODUCTS_DIGIT_COUNT_PER_PACKET, interStr.length)
-          intermediateSumsStr[i + j] = substr
+          intermediateSumsStr[currentIndex] = substr
           carryStr = interStr.substring(0, interStr.length - PARTIAL_PRODUCTS_DIGIT_COUNT_PER_PACKET)
           currentIndex = currentIndex + 1
         }
