@@ -105,12 +105,6 @@ describe('add', () => {
           assert.equal(result, '-9007199254740991', 'n°7')
         })
       })
-      context.skip('debug', () => {
-        it('should be true', () => {
-          const result = add('136995', '-162834')
-          assert.equal(result, '-25839')
-        })
-      })
     })
   })
 })

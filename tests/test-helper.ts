@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 
-const randomIntAsStringAndNumber = (): { numberVer: number, stringVer: string } => {
+const randomSafeIntAsStringAndNumber = (): { numberVer: number, stringVer: string } => {
   const randomInteger = Math.floor(Math.random() * 1000000)
   const shouldBeNegative = Math.random() >= 0.5
   const finalInteger = shouldBeNegative ? -randomInteger : randomInteger
@@ -10,4 +10,12 @@ const randomIntAsStringAndNumber = (): { numberVer: number, stringVer: string } 
   }
 }
 
-export { assert, randomIntAsStringAndNumber }
+const randomSafePositiveIntAsStringAndNumber = (): { numberVer: number, stringVer: string } => {
+  const randomInteger = Math.floor(Math.random() * 1000000)
+  return {
+    numberVer: randomInteger,
+    stringVer: randomInteger.toString(),
+  }
+}
+
+export { assert, randomSafeIntAsStringAndNumber, randomSafePositiveIntAsStringAndNumber }

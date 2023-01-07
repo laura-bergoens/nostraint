@@ -105,12 +105,6 @@ describe('subtract', () => {
           assert.equal(result, '-9007199254741009', 'n°7')
         })
       })
-      context.skip('debug', () => {
-        it('should be true', () => {
-          const result = subtract('170698', '180959')
-          assert.equal(result, '-10261')
-        })
-      })
     })
   })
 })
