@@ -1,22 +1,28 @@
-// REMOVE ME AT BUILD
-import pino from 'pino'
-const environment = process.env.NODE_ENV
-const _log = (): Function => {
-  const formatters = {
-    level(): Object {
-      return {}
-    },
-    bindings(): Object {
-      return {}
-    },
-  }
-  // https://github.com/pinojs/pino/blob/master/docs/api.md#logging-method-parameters
-  const logger = pino({ level: 'trace', formatters, timestamp: false, messageKey: 'log' })
-  return (caller: string, msg: string): void => logger.trace('%s: %s', caller, msg)
-}
-const _emptyLog = (_a: string): void => {}
-export const log = environment === 'production' ? _emptyLog : _log()
-// REMOVE ME AT BUILD - END
+import pino from 'pino' // REMOVE ME AT BUILD
+const environment = process.env.NODE_ENV // REMOVE ME AT BUILD
+let indent = ''
+const _logFunctions = ((): { _trace: Function, _traceAndIndent: Function, _unindentAndTrace: Function } => { // REMOVE ME AT BUILD
+  const formatters = { // REMOVE ME AT BUILD
+    level(): Object { // REMOVE ME AT BUILD
+      return {} // REMOVE ME AT BUILD
+    }, // REMOVE ME AT BUILD
+    bindings(): Object { // REMOVE ME AT BUILD
+      return {}// REMOVE ME AT BUILD
+    }, // REMOVE ME AT BUILD
+  }// REMOVE ME AT BUILD
+  // https://github.com/pinojs/pino/blob/master/docs/api.md#logging-method-parameters // REMOVE ME AT BUILD
+  const logger = pino({ level: 'trace', formatters, timestamp: false, messageKey: 'log' })// REMOVE ME AT BUILD
+  const _trace = (caller: string, msg: string): void => logger.trace('%s%s: %s', indent, caller, msg) // REMOVE ME AT BUILD
+  return { // REMOVE ME AT BUILD
+    _trace, // REMOVE ME AT BUILD
+    _traceAndIndent: (caller: string, msg: string): void => { _trace(caller, msg); indent = `${indent}  ` }, // REMOVE ME AT BUILD
+    _unindentAndTrace: (caller: string, msg: string): void => { indent = indent.substring(2); _trace(caller, msg) }, // REMOVE ME AT BUILD
+  }// REMOVE ME AT BUILD
+})()// REMOVE ME AT BUILD
+const _emptyLog = (_a: string): void => {}// REMOVE ME AT BUILD
+export const trace = environment === 'production' ? _emptyLog : _logFunctions._trace// REMOVE ME AT BUILD
+export const traceIndent = environment === 'production' ? _emptyLog : _logFunctions._traceAndIndent// REMOVE ME AT BUILD
+export const traceUnindent = environment === 'production' ? _emptyLog : _logFunctions._unindentAndTrace// REMOVE ME AT BUILD
 
 const REGEX_INTEGER = /^\s*[+-]?\s*([0-9]*\s*)*$/
 

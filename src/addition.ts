@@ -4,13 +4,15 @@ import {
   splitSignAndNumber,
   isBiggerThan,
   changeSign,
-  stripLeadingZeroesOnCleanUnsigned,
+  stripLeadingZeroesOnCleanUnsigned, traceIndent, traceUnindent,
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
 const PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET = 15
 
 export const baseAdd = (a: string, b: string, algo: Function): string => {
+  traceIndent('addition.ts:baseAdd', `start - a: ${a}, b: ${b}`)
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
+    traceUnindent('addition.ts:baseAdd', 'end - bad argument(s), result: ')
     return ''
   }
   const cleanA = cleanIntegerStr(a)
@@ -18,9 +20,12 @@ export const baseAdd = (a: string, b: string, algo: Function): string => {
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
   if (_isAdditionSafe(intA, intB)) {
+    traceUnindent('addition.ts:baseAdd', `end - using safe addition, result: ${(intA + intB).toString()}`)
     return (intA + intB).toString()
   }
-  return algo(cleanA, cleanB)
+  const result: string = algo(cleanA, cleanB)
+  traceUnindent('addition.ts:baseAdd', `end - using algo, result: ${result}`)
+  return result
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -31,7 +36,9 @@ export const baseAdd_forRandomTestsOnly = (a: string, b: string, algo: Function)
 }
 
 export const baseSubtract = (a: string, b: string, algo: Function): string => {
+  traceIndent('addition.ts:baseSubtract', `start - a: ${a}, b: ${b}`)
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
+    traceUnindent('addition.ts:baseSubtract', 'end - bad argument(s), result: ')
     return ''
   }
   const cleanA = cleanIntegerStr(a)
@@ -39,9 +46,12 @@ export const baseSubtract = (a: string, b: string, algo: Function): string => {
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
   if (_isSubtractionSafe(intA, intB)) {
+    traceUnindent('addition.ts:baseSubtract', `end - using safe subtraction, result: ${(intA - intB).toString()}`)
     return (intA - intB).toString()
   }
-  return algo(cleanA, changeSign(cleanB))
+  const result: string = algo(cleanA, changeSign(cleanB))
+  traceUnindent('addition.ts:baseSubtract', `end - using algo, result: ${result}`)
+  return result
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -65,6 +75,7 @@ const _partialSums = (a: string, b: string): string => {
 }
 
 const _partialSumsAllPositive = (a: string, b: string): string => {
+  traceIndent('addition.ts:_partialSumsAllPositive', `start - a: ${a}, b: ${b}`)
   const packetsA = _toPackets(a)
   const packetsB = _toPackets(b)
   let result = ''
@@ -83,13 +94,24 @@ const _partialSumsAllPositive = (a: string, b: string): string => {
     result = `${currentSumAsStr.padStart(PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, '0')}${result}`
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
-  return stripLeadingZeroesOnCleanUnsigned(result)
+  result = stripLeadingZeroesOnCleanUnsigned(result)
+  traceUnindent('addition.ts:_partialSumsAllPositive', `end - result: ${result}`)
+  return result
 }
 
-const _partialSumsAllNegative = (a: string, b: string): string => `-${_partialSumsAllPositive(a, b)}`
+const _partialSumsAllNegative = (a: string, b: string): string => {
+  traceIndent('addition.ts:_partialSumsAllNegative', `start - a: ${a}, b: ${b}`)
+  const result = `-${_partialSumsAllPositive(a, b)}`
+  traceUnindent('addition.ts:_partialSumsAllNegative', `end - result: ${result}`)
+  return result
+}
 
 const _partialSumsMixed = (neg: string, pos: string): string => {
-  if (neg === pos) return '0'
+  traceIndent('addition.ts:_partialSumsMixed', `start - neg: ${neg}, pos: ${pos}`)
+  if (neg === pos) {
+    traceUnindent('addition.ts:_partialSumsMixed', 'end - compensating, result: 0')
+    return '0'
+  }
   const finalSign = isBiggerThan(neg, pos) ? '-' : '+'
   const packetsNeg = _toPackets(neg)
   const packetsPos = _toPackets(pos)
@@ -117,7 +139,9 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
     result = `${currentSumAsStrNoSign.padStart(PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET, '0')}${result}`
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
-  return `${finalSign === '-' ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(result)}`
+  result = `${finalSign === '-' ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(result)}`
+  traceUnindent('addition.ts:_partialSumsMixed', `end - result: ${result}`)
+  return result
 }
 
 const _toPackets = (a: string): string[] => {
