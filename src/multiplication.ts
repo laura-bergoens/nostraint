@@ -1,4 +1,4 @@
-import { cleanIntegerStr, isIntegerStr, stripLeadingZeroesOnCleanUnsigned } from './utils'
+import { cleanIntegerStr, isIntegerStr, splitSignAndNumber, stripLeadingZeroesOnCleanUnsigned } from './utils'
 
 const PARTIAL_PRODUCTS_DIGIT_COUNT_PER_PACKET = 7
 
@@ -10,6 +10,7 @@ export const baseMultiply = (a: string, b: string, algo: Function): string => {
   const cleanB = cleanIntegerStr(b)
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
+  if (intA === 0 || intB === 0) return '0'
   if (_isMultiplicationSafe(intA, intB)) {
     return (intA * intB).toString()
   }
@@ -26,8 +27,11 @@ export const baseMultiply_forRandomTestsOnly = (a: string, b: string, algo: Func
 const _isMultiplicationSafe = (a: number, b: number): boolean => Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a * b)
 
 const _partialProducts = (a: string, b: string): string => {
-  const packetsA = _toPackets(a)
-  const packetsB = _toPackets(b)
+  const { number: numberA, sign: signA } = splitSignAndNumber(a)
+  const { number: numberB, sign: signB } = splitSignAndNumber(b)
+  const isNegative = signA !== signB
+  const packetsA = _toPackets(numberA)
+  const packetsB = _toPackets(numberB)
   const longest = packetsA.length > packetsB.length ? packetsA : packetsB
   const smallest = packetsA.length > packetsB.length ? packetsB : packetsA
   const intermediateSumsStr = Array<string>((longest.length * 2) + 1).fill('0')
@@ -60,7 +64,7 @@ const _partialProducts = (a: string, b: string): string => {
       }
     }
   }
-  return stripLeadingZeroesOnCleanUnsigned(intermediateSumsStr.reverse().join(''))
+  return `${isNegative ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(intermediateSumsStr.reverse().join(''))}`
 }
 
 const _toPackets = (a: string): string[] => {
