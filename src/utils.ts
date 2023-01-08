@@ -2,8 +2,17 @@
 import pino from 'pino'
 const environment = process.env.NODE_ENV
 const _log = (): Function => {
-  const logger = pino()
-  return (a: string): void => logger.info(a)
+  const formatters = {
+    level(): Object {
+      return {}
+    },
+    bindings(): Object {
+      return {}
+    },
+  }
+  // https://github.com/pinojs/pino/blob/master/docs/api.md#logging-method-parameters
+  const logger = pino({ level: 'trace', formatters, timestamp: false, messageKey: 'log' })
+  return (caller: string, msg: string): void => logger.trace('%s: %s', caller, msg)
 }
 const _emptyLog = (_a: string): void => {}
 export const log = environment === 'production' ? _emptyLog : _log()
