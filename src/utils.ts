@@ -1,3 +1,14 @@
+// REMOVE ME AT BUILD
+import pino from 'pino'
+const environment = process.env.NODE_ENV
+const _log = (): Function => {
+  const logger = pino()
+  return (a: string): void => logger.info(a)
+}
+const _emptyLog = (_a: string): void => {}
+export const log = environment === 'production' ? _emptyLog : _log()
+// REMOVE ME AT BUILD - END
+
 const REGEX_INTEGER = /^\s*[+-]?\s*([0-9]*\s*)*$/
 
 const stripLeadingZeroes = (a: string): string => {
@@ -9,7 +20,6 @@ const stripLeadingZeroes = (a: string): string => {
   return `${sign}${number.length > 0 ? number : '0'}`
 }
 const stripSpaces = (a: string): string => a.replace(/\s/g, '')
-
 export const stripLeadingZeroesOnCleanUnsigned = (a: string): string => {
   let clone = a
   while (clone?.[0] === '0') clone = clone.substring(1)
