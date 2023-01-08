@@ -6,14 +6,14 @@ const stripLeadingZeroes = (a: string): string => {
     ? { sign: clone.charAt(0), number: clone.substring(1) }
     : { sign: '', number: clone }
   while (number?.[0] === '0') number = number.substring(1)
-  return `${sign}${number}`
+  return `${sign}${number.length > 0 ? number : '0'}`
 }
 const stripSpaces = (a: string): string => a.replace(/\s/g, '')
 
 export const stripLeadingZeroesOnCleanUnsigned = (a: string): string => {
   let clone = a
   while (clone?.[0] === '0') clone = clone.substring(1)
-  return clone
+  return clone.length > 0 ? clone : '0'
 }
 export const isIntegerStr = (a: string): boolean => a.match(REGEX_INTEGER)?.[0] === a
 export const cleanIntegerStr = (a: string): string => stripLeadingZeroes(stripSpaces(a))
