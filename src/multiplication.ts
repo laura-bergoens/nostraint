@@ -1,20 +1,29 @@
+import { tracelogIndent, tracelogUnindent } from './tracelog'
 import { cleanIntegerStr, isIntegerStr, splitSignAndNumber, stripLeadingZeroesOnCleanUnsigned } from './utils'
 
 const PARTIAL_PRODUCTS_DIGIT_COUNT_PER_PACKET = 7
 
 export const baseMultiply = (a: string, b: string, algo: Function): string => {
+  tracelogIndent('multiplication.ts:baseMultiply', `start - a: ${a}, b: ${b}`)
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
+    tracelogUnindent('multiplication.ts:baseMultiply', 'end - bad argument(s), result: ')
     return ''
   }
   const cleanA = cleanIntegerStr(a)
   const cleanB = cleanIntegerStr(b)
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
-  if (intA === 0 || intB === 0) return '0'
+  if (intA === 0 || intB === 0) {
+    tracelogUnindent('multiplication.ts:baseMultiply', 'end - multiplied by zero, result: 0')
+    return '0'
+  }
   if (_isMultiplicationSafe(intA, intB)) {
+    tracelogUnindent('multiplication.ts:baseMultiply', `end - using safe multiplication, result: ${(intA * intB).toString()}`)
     return (intA * intB).toString()
   }
-  return algo(cleanA, cleanB)
+  const result: string = algo(cleanA, cleanB)
+  tracelogUnindent('multiplication.ts:baseMultiply', `end - using algo, result: ${result}`)
+  return result
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -27,6 +36,7 @@ export const baseMultiply_forRandomTestsOnly = (a: string, b: string, algo: Func
 const _isMultiplicationSafe = (a: number, b: number): boolean => Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a * b)
 
 const _partialProducts = (a: string, b: string): string => {
+  tracelogIndent('multiplication.ts:_partialProducts', `start - a: ${a}, b: ${b}`)
   const { number: numberA, sign: signA } = splitSignAndNumber(a)
   const { number: numberB, sign: signB } = splitSignAndNumber(b)
   const isNegative = signA !== signB
@@ -64,7 +74,9 @@ const _partialProducts = (a: string, b: string): string => {
       }
     }
   }
-  return `${isNegative ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(intermediateSumsStr.reverse().join(''))}`
+  const result = `${isNegative ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(intermediateSumsStr.reverse().join(''))}`
+  tracelogUnindent('multiplication.ts:_partialProducts', `end - result: ${result}`)
+  return result
 }
 
 const _toPackets = (a: string): string[] => {

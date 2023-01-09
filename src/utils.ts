@@ -9,7 +9,6 @@ const stripLeadingZeroes = (a: string): string => {
   return `${sign}${number.length > 0 ? number : '0'}`
 }
 const stripSpaces = (a: string): string => a.replace(/\s/g, '')
-
 export const stripLeadingZeroesOnCleanUnsigned = (a: string): string => {
   let clone = a
   while (clone?.[0] === '0') clone = clone.substring(1)

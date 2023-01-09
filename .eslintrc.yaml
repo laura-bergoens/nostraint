@@ -40,6 +40,9 @@ rules:
   linebreak-style:
     - error
     - unix
+  "@typescript-eslint/no-confusing-void-expression":
+    - error
+    - {ignoreArrowShorthand: true}
   no-multiple-empty-lines:
     - error
     - {max: 1, maxEOF: 1}
@@ -76,6 +79,8 @@ rules:
   space-before-function-paren:
     - error
     - {anonymous: never, named: never, asyncArrow: ignore}
+  "@typescript-eslint/space-before-function-paren":
+    - off
   space-in-parens:
     - error
   space-infix-ops:

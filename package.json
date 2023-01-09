@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf ./build && tsc",
+    "build": "rimraf ./build && NODE_ENV=production tsc && ./scripts/build/remove_tracelog_calls.sh",
+    "clean": "rimraf ./node_modules",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "lint:fix": "npm run lint -- --fix",
-    "perf": "npm run build && ls -d build/scripts/performance/* | xargs -n1 node",
+    "perf": "npm run build && ls -d build/scripts/performance/* | NODE_ENV=production xargs -n1 node",
     "start": "npm run build && node build/index.js",
     "start:dev": "npx nodemon",
     "test": "NODE_ENV=test ts-mocha --exit --recursive --reporter=${MOCHA_REPORTER:-dot} -p ./tsconfig.json \\\"tests/**/*.spec.ts\\\"",
-    "test:watch": "npm run test -- --watch --watch-files tests/**/*.spec.ts,src/**/*.ts"
+    "test:watch": "NODE_ENV=test npm run test -- --watch --watch-files tests/**/*.spec.ts,src/**/*.ts"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +37,7 @@
     "eslint-plugin-yml": "^1.4.0",
     "mocha": "^10.2.0",
     "nodemon": "^2.0.20",
+    "pino": "^8.8.0",
     "prettier": "^2.8.2",
     "rimraf": "^3.0.2",
     "sinon": "^15.0.1",
