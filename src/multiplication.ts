@@ -1,11 +1,12 @@
-import { cleanIntegerStr, isIntegerStr, splitSignAndNumber, stripLeadingZeroesOnCleanUnsigned, traceIndent, traceUnindent } from './utils'
+import { tracelogIndent, tracelogUnindent } from './tracelog'
+import { cleanIntegerStr, isIntegerStr, splitSignAndNumber, stripLeadingZeroesOnCleanUnsigned } from './utils'
 
 const PARTIAL_PRODUCTS_DIGIT_COUNT_PER_PACKET = 7
 
 export const baseMultiply = (a: string, b: string, algo: Function): string => {
-  traceIndent('multiplication.ts:baseMultiply', `start - a: ${a}, b: ${b}`)
+  tracelogIndent('multiplication.ts:baseMultiply', `start - a: ${a}, b: ${b}`)
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
-    traceUnindent('multiplication.ts:baseMultiply', 'end - bad argument(s), result: ')
+    tracelogUnindent('multiplication.ts:baseMultiply', 'end - bad argument(s), result: ')
     return ''
   }
   const cleanA = cleanIntegerStr(a)
@@ -13,15 +14,15 @@ export const baseMultiply = (a: string, b: string, algo: Function): string => {
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
   if (intA === 0 || intB === 0) {
-    traceUnindent('multiplication.ts:baseMultiply', 'end - multiplied by zero, result: 0')
+    tracelogUnindent('multiplication.ts:baseMultiply', 'end - multiplied by zero, result: 0')
     return '0'
   }
   if (_isMultiplicationSafe(intA, intB)) {
-    traceUnindent('multiplication.ts:baseMultiply', `end - using safe multiplication, result: ${(intA * intB).toString()}`)
+    tracelogUnindent('multiplication.ts:baseMultiply', `end - using safe multiplication, result: ${(intA * intB).toString()}`)
     return (intA * intB).toString()
   }
   const result: string = algo(cleanA, cleanB)
-  traceUnindent('multiplication.ts:baseMultiply', `end - using algo, result: ${result}`)
+  tracelogUnindent('multiplication.ts:baseMultiply', `end - using algo, result: ${result}`)
   return result
 }
 
@@ -35,7 +36,7 @@ export const baseMultiply_forRandomTestsOnly = (a: string, b: string, algo: Func
 const _isMultiplicationSafe = (a: number, b: number): boolean => Number.isSafeInteger(a) && Number.isSafeInteger(b) && Number.isSafeInteger(a * b)
 
 const _partialProducts = (a: string, b: string): string => {
-  traceIndent('multiplication.ts:_partialProducts', `start - a: ${a}, b: ${b}`)
+  tracelogIndent('multiplication.ts:_partialProducts', `start - a: ${a}, b: ${b}`)
   const { number: numberA, sign: signA } = splitSignAndNumber(a)
   const { number: numberB, sign: signB } = splitSignAndNumber(b)
   const isNegative = signA !== signB
@@ -74,7 +75,7 @@ const _partialProducts = (a: string, b: string): string => {
     }
   }
   const result = `${isNegative ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(intermediateSumsStr.reverse().join(''))}`
-  traceUnindent('multiplication.ts:_partialProducts', `end - result: ${result}`)
+  tracelogUnindent('multiplication.ts:_partialProducts', `end - result: ${result}`)
   return result
 }
 

@@ -1,18 +1,19 @@
+import { tracelogIndent, tracelogUnindent } from './tracelog'
 import {
   cleanIntegerStr,
   isIntegerStr,
   splitSignAndNumber,
   isBiggerThan,
   changeSign,
-  stripLeadingZeroesOnCleanUnsigned, traceIndent, traceUnindent,
+  stripLeadingZeroesOnCleanUnsigned,
 } from './utils'
 // Reminder:  Number.MAX_SAFE_INTEGER -> 9007199254740991
 const PARTIAL_SUMS_DIGIT_COUNT_PER_PACKET = 15
 
 export const baseAdd = (a: string, b: string, algo: Function): string => {
-  traceIndent('addition.ts:baseAdd', `start - a: ${a}, b: ${b}`)
+  tracelogIndent('addition.ts:baseAdd', `start - a: ${a}, b: ${b}`)
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
-    traceUnindent('addition.ts:baseAdd', 'end - bad argument(s), result: ')
+    tracelogUnindent('addition.ts:baseAdd', 'end - bad argument(s), result: ')
     return ''
   }
   const cleanA = cleanIntegerStr(a)
@@ -20,11 +21,11 @@ export const baseAdd = (a: string, b: string, algo: Function): string => {
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
   if (_isAdditionSafe(intA, intB)) {
-    traceUnindent('addition.ts:baseAdd', `end - using safe addition, result: ${(intA + intB).toString()}`)
+    tracelogUnindent('addition.ts:baseAdd', `end - using safe addition, result: ${(intA + intB).toString()}`)
     return (intA + intB).toString()
   }
   const result: string = algo(cleanA, cleanB)
-  traceUnindent('addition.ts:baseAdd', `end - using algo, result: ${result}`)
+  tracelogUnindent('addition.ts:baseAdd', `end - using algo, result: ${result}`)
   return result
 }
 
@@ -36,9 +37,9 @@ export const baseAdd_forRandomTestsOnly = (a: string, b: string, algo: Function)
 }
 
 export const baseSubtract = (a: string, b: string, algo: Function): string => {
-  traceIndent('addition.ts:baseSubtract', `start - a: ${a}, b: ${b}`)
+  tracelogIndent('addition.ts:baseSubtract', `start - a: ${a}, b: ${b}`)
   if (!isIntegerStr(a) || !isIntegerStr(b)) {
-    traceUnindent('addition.ts:baseSubtract', 'end - bad argument(s), result: ')
+    tracelogUnindent('addition.ts:baseSubtract', 'end - bad argument(s), result: ')
     return ''
   }
   const cleanA = cleanIntegerStr(a)
@@ -46,11 +47,11 @@ export const baseSubtract = (a: string, b: string, algo: Function): string => {
   const intA = parseInt(cleanA)
   const intB = parseInt(cleanB)
   if (_isSubtractionSafe(intA, intB)) {
-    traceUnindent('addition.ts:baseSubtract', `end - using safe subtraction, result: ${(intA - intB).toString()}`)
+    tracelogUnindent('addition.ts:baseSubtract', `end - using safe subtraction, result: ${(intA - intB).toString()}`)
     return (intA - intB).toString()
   }
   const result: string = algo(cleanA, changeSign(cleanB))
-  traceUnindent('addition.ts:baseSubtract', `end - using algo, result: ${result}`)
+  tracelogUnindent('addition.ts:baseSubtract', `end - using algo, result: ${result}`)
   return result
 }
 
@@ -75,7 +76,7 @@ const _partialSums = (a: string, b: string): string => {
 }
 
 const _partialSumsAllPositive = (a: string, b: string): string => {
-  traceIndent('addition.ts:_partialSumsAllPositive', `start - a: ${a}, b: ${b}`)
+  tracelogIndent('addition.ts:_partialSumsAllPositive', `start - a: ${a}, b: ${b}`)
   const packetsA = _toPackets(a)
   const packetsB = _toPackets(b)
   let result = ''
@@ -95,21 +96,21 @@ const _partialSumsAllPositive = (a: string, b: string): string => {
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
   result = stripLeadingZeroesOnCleanUnsigned(result)
-  traceUnindent('addition.ts:_partialSumsAllPositive', `end - result: ${result}`)
+  tracelogUnindent('addition.ts:_partialSumsAllPositive', `end - result: ${result}`)
   return result
 }
 
 const _partialSumsAllNegative = (a: string, b: string): string => {
-  traceIndent('addition.ts:_partialSumsAllNegative', `start - a: ${a}, b: ${b}`)
+  tracelogIndent('addition.ts:_partialSumsAllNegative', `start - a: ${a}, b: ${b}`)
   const result = `-${_partialSumsAllPositive(a, b)}`
-  traceUnindent('addition.ts:_partialSumsAllNegative', `end - result: ${result}`)
+  tracelogUnindent('addition.ts:_partialSumsAllNegative', `end - result: ${result}`)
   return result
 }
 
 const _partialSumsMixed = (neg: string, pos: string): string => {
-  traceIndent('addition.ts:_partialSumsMixed', `start - neg: ${neg}, pos: ${pos}`)
+  tracelogIndent('addition.ts:_partialSumsMixed', `start - neg: ${neg}, pos: ${pos}`)
   if (neg === pos) {
-    traceUnindent('addition.ts:_partialSumsMixed', 'end - compensating, result: 0')
+    tracelogUnindent('addition.ts:_partialSumsMixed', 'end - compensating, result: 0')
     return '0'
   }
   const finalSign = isBiggerThan(neg, pos) ? '-' : '+'
@@ -140,7 +141,7 @@ const _partialSumsMixed = (neg: string, pos: string): string => {
   }
   if (carry !== 0) result = `${carry.toString()}${result}`
   result = `${finalSign === '-' ? '-' : ''}${stripLeadingZeroesOnCleanUnsigned(result)}`
-  traceUnindent('addition.ts:_partialSumsMixed', `end - result: ${result}`)
+  tracelogUnindent('addition.ts:_partialSumsMixed', `end - result: ${result}`)
   return result
 }
 
