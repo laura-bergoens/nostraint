@@ -40,6 +40,9 @@ rules:
   linebreak-style:
     - error
     - unix
+  "@typescript-eslint/no-confusing-void-expression":
+    - error
+    - {ignoreArrowShorthand: true}
   no-multiple-empty-lines:
     - error
     - {max: 1, maxEOF: 1}
