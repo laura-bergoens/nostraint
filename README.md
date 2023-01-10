@@ -34,25 +34,25 @@ Done by executing `npm run perf`
 
 _On safe integers (meaning `< Number.MAX_SAFE_INTEGER` which is `9007199254740991`), less than 7 digits_
 
-|                | exec time (ms) |
-|----------------|----------------|
-| addition       |  1138.8901     |
-| subtraction    |  654.0109      |
-| multiplication |  650.5365      |
+|                | exec time (ms) :watch: |
+|----------------|------------------------|
+| addition       | 1138.8901              |
+| subtraction    | 654.0109               |
+| multiplication | 650.5365               |
 
 _On unsafe integers (meaning `> Number.MAX_SAFE_INTEGER` which is `9007199254740991`), approx. 55 digits_
 
-|                                | exec time (ms) |
-|--------------------------------|----------------|
-| addition - only positive       | 4219.9753      |
-| addition - only negative       | 3640.6310      |
-| addition - mix                 | 3857.0701      |
-| subtraction - only positive    | 4960.0909      |
-| subtraction - only negative    | 4990.6909      |
-| subtraction - mix              | 3483.5355      |
-| multiplication - only positive | 33070.5006     |
-| multiplication - only negative | 27750.5147     |
-| multiplication - mix           | 28293.5184     |
+|                                | exec time (ms) :watch: |
+|--------------------------------|------------------------|
+| addition - only positive       | 4219.9753              |
+| addition - only negative       | 3640.6310              |
+| addition - mix                 | 3857.0701              |
+| subtraction - only positive    | 4960.0909              |
+| subtraction - only negative    | 4990.6909              |
+| subtraction - mix              | 3483.5355              |
+| multiplication - only positive | 33070.5006             |
+| multiplication - only negative | 27750.5147             |
+| multiplication - mix           | 28293.5184             |
 
 ## Algorithms
 Coming soon
