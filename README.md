@@ -2,9 +2,10 @@
 ## Status
 :red_circle: not released yet. Development ongoing.
 ## What is it
-**Nostraint** is a library that helps you perform operations on numbers without worrying about overflow related constraints.
-
+**Nostraint** is a javascript library that helps you perform operations on numbers without worrying about overflow related constraints.
 It offers a set of functions that handle numbers in their string version.
+
+**Nostraint** will be released under the MIT license and is tested by building with the following Nodejs versions : `14.x`, `16.x` and `18.x` 
 
 ## Features
 **Nostraint** can :
@@ -17,10 +18,19 @@ It offers a set of functions that handle numbers in their string version.
 | division                |         :heavy_multiplication_x:          |       :heavy_multiplication_x:          |    :black_circle:   |
 | comparison              |        :black_circle:           |    :black_circle:             |   :black_circle:    |
 | modulo                  |     :black_circle:              |     :black_circle:            |   :black_circle:    |
-| other operations TBD... |       :black_circle:            |     :black_circle:            |   :black_circle:    |
+| ... |       :black_circle:            |     :black_circle:            |   :black_circle:    |
 
 Legend:
 - :heavy_check_mark: : done
 - :heavy_multiplication_x: : not done yet but planned
-- :black_circle: : not done nor planned
+- :black_circle: : not done nor planned / TBD
+
+## Installation
+Coming soon
+
+## Performances
+Coming soon
+
+## Algorithms
+Coming soon
 
