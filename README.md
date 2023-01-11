@@ -55,5 +55,17 @@ _On unsafe integers (meaning `> Number.MAX_SAFE_INTEGER` which is `9007199254740
 | multiplication - mix           | 28293.5184             |
 
 ## Algorithms
-Coming soon
+### Addition - Subtraction
+Simple "addition / subtraction with carry" implementation, with a little twist :
+these operations on integers are possible as long as numbers at play do not exceed `Number.MAX_SAFE_INTEGER` which is `9007199254740991`.
+As we can see, this number is 16 digits long. Moreover, classic addition with carry presents an interesting property : the carry can never exceeds 1.
+
+_Example : `999 + 999 = 1 998`_
+
+As we can see, even when the operands are at max value for a given number of digits, carry is still 1. So, to benefit from the native implementation
+of arithmetics in Javascript on integers, we simply separate input strings in packets of `MAX_DIGITS - 1`, which is 15 digits. Then, we add/subtract packet by packet and
+report the carry when necessary.
+
+### Multiplication
+
 
